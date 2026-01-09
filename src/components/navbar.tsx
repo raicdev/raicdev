@@ -37,42 +37,42 @@ export function NavBar() {
 
   return (
     <nav className="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50">
-      <div className="flex items-center gap-2 bg-background/50 backdrop-blur-[2px] backdrop-saturate-[1.8] border rounded-full px-4 py-2 shadow-lg">
+      <div className="flex items-center gap-1 bg-background/80 backdrop-blur-md border rounded-full px-3 py-2 shadow-lg">
         {navItems.map((item) => (
           <Link
             key={item.title}
             href={item.href}
             className={cn(
-              "flex items-center gap-2 px-3 py-2 text-sm rounded-full transition-all duration-200 hover:scale-105",
+              "flex items-center justify-center p-2 rounded-full transition-colors",
               pathname === item.href
                 ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent/30 backdrop-blur-sm",
+                : "text-muted-foreground hover:text-foreground hover:bg-accent",
             )}
             title={item.title}
           >
             {item.icon}
-            <span className="hidden sm:inline">{item.title}</span>
           </Link>
         ))}
 
-        <div className="w-px h-6 bg-border mx-2" />
+        <div className="w-px h-6 bg-border mx-1" />
 
         {socialItems.map((item) => (
           <Link
             key={item.title}
             href={item.href}
             target="_blank"
-            className="flex items-center justify-center p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent transition-all duration-200 hover:scale-105"
+            className="flex items-center justify-center p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent transition-colors"
             title={item.title}
           >
             {item.icon}
           </Link>
         ))}
 
-        <div className="w-px h-6 bg-border mx-2" />
+        <div className="w-px h-6 bg-border mx-1" />
 
         <Button
           variant="ghost"
+          size="icon"
           className="rounded-full"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >

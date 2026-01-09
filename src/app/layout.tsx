@@ -36,7 +36,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="bg-muted/20 p-4 md:p-16 py-20 md:py-30 mx-auto max-w-3xl min-h-screen h-full">
+          <main className="p-4 py-12 md:py-20 lg:py-25 mx-auto max-w-xl min-h-screen h-full">
             <PageTransition>{children}</PageTransition>
           </main>
 

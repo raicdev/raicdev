@@ -139,6 +139,10 @@
 }
 
 @layer utilities {
+  :where(.animate-in) {
+    --tw-animation-fill-mode: both;
+  }
+
   .view-transition-name-main {
     view-transition-name: main-content;
   }
@@ -149,5 +153,29 @@
 
   .view-transition-name-page-title {
     view-transition-name: page-title;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  @keyframes spotify-pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+    }
+  }
+
+  .animate-spotify-pulse {
+    animation: spotify-pulse 2s ease-in-out infinite;
   }
 }

@@ -1,87 +1,56 @@
 "use client";
 
-import {
-  SiCss,
-  SiDotnet,
-  SiHtml5,
-  SiNextdotjs,
-  SiNodedotjs,
-  SiReact,
-  SiShadcnui,
-  SiSpotify,
-  SiTailwindcss,
-  SiTypescript,
-} from "@icons-pack/react-simple-icons";
-import Autoplay from "embla-carousel-autoplay";
-import { Book, BotIcon, Dot, ExternalLink, Github, Mail } from "lucide-react";
+import { SiGithub, SiSpotify, SiX } from "@icons-pack/react-simple-icons";
+import { ArrowUpRight, Triangle } from "lucide-react";
 import Link from "next/link";
-import CSharpIcon from "@/components/csharp-icon";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ProjectsList } from "@/components/projects-list";
 import {
   Carousel,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-const projects = [
-  {
-    name: "Deni AI",
-    description: "A free & unlimited open-source AI chatbot.",
-    links: {
-      github: "https://github.com/teamzisty/deni-ai",
-      website: "https://deniai.app",
-    },
-    techStack: [SiNodedotjs, SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiShadcnui],
-  },
-  {
-    name: "Prodfind",
-    description: "A tool that allows you to find, publish products.",
-    links: {
-      github: "https://github.com/teamzisty/prodfind",
-      website: "https://prodfind.space",
-    },
-    techStack: [SiNodedotjs, SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiShadcnui],
-  },
-  {
-    name: "VistaUpdater",
-    description: "Make Windows Vista to updateable. 50K+ users.",
-    links: {
-      github: "https://github.com/raicdev/vistaupdater",
-      website: "https://vistaupdater.net",
-    },
-    techStack: [SiDotnet, CSharpIcon, SiHtml5, SiCss],
-  },
-];
-
-// const musics = [
-//   "https://open.spotify.com/embed/track/1TdYXsTtYbud0IieSW5wbh?utm_source=generator",
-//   "https://open.spotify.com/embed/track/5f47DEGO0cc0F08WB5xy17?utm_source=generator",
-//   "https://open.spotify.com/embed/track/2tNSF76aCuycE9e7nAi4eb?utm_source=generator",
-// ];
-
 const musics = [
   {
-    title: "JOY",
-    artist: "WANIMA",
-    link: "https://open.spotify.com/track/1TdYXsTtYbud0IieSW5wbh",
-    image: "https://i.scdn.co/image/ab67616d00001e02a47ebd6c2e33bda905c84f87",
+    title: "IOWA",
+    artist: "10-FEET",
+    link: "https://open.spotify.com/track/1yfXHFxvek4mnILRnedKEo",
+    image: "https://i.scdn.co/image/ab67616d00001e02ad4304aa5996fa75dea55154",
+  },
+  {
+    title: "Sono Mukoue",
+    artist: "10-FEET",
+    link: "https://open.spotify.com/track/0vGTbYvJkMOzwlgxHViUfE",
+    image: "https://i.scdn.co/image/ab67616d00001e0263674809f0964e14b28a14d6",
+  },
+  {
+    title: "Shinkirou",
+    artist: "10-FEET",
+    link: "https://open.spotify.com/track/3wsI1dAwxVngYgg5LHwyR9",
+    image: "https://i.scdn.co/image/ab67616d00001e0263674809f0964e14b28a14d6",
+  },
+  {
+    title: "Kaze",
+    artist: "10-FEET",
+    link: "https://open.spotify.com/track/7tN4bCOV1UMseE3JXkROWD",
+    image: "https://i.scdn.co/image/ab67616d00001e028652baadc97a3c2d95307e2e",
   },
   {
     title: "VIBES BY VIBES",
     artist: "10-FEET, WANIMA",
     link: "https://open.spotify.com/track/4IQ8TRkM7s24li5Y6xbEtp",
     image: "https://i.scdn.co/image/ab67616d00001e0280939e7013adeaa97c89febd",
+  },
+  {
+    title: "JOY",
+    artist: "WANIMA",
+    link: "https://open.spotify.com/track/1TdYXsTtYbud0IieSW5wbh",
+    image: "https://i.scdn.co/image/ab67616d00001e02a47ebd6c2e33bda905c84f87",
   },
   {
     title: "BOUNCE",
@@ -103,264 +72,190 @@ const musics = [
   },
 ];
 
-export default function Home() {
-  return (
-    <>
-      {/* Hero Section */}
-      <div className="flex flex-col md:flex-row justify-between w-full mb-8">
-        <div className="flex flex-col justify-center">
-          <h1 className="text-5xl font-semibold text-foreground mb-2 tracking-tight">rai</h1>
-          <p className="text-lg text-muted-foreground mb-4 tracking-tight font-medium flex items-center">
-            Student <Dot /> Full Stack Developer
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div>
-            <Button variant="ghost" size="lg" asChild>
-              <Link href="/contact">
-                <Mail className="w-4 h-4 mr-2" />
-                Contact
-              </Link>
-            </Button>
-          </div>
-          <div>
-            <Button variant="ghost" size="lg" asChild>
-              <Link href="https://github.com/raicdev" target="_blank">
-                <Github className="w-4 h-4 mr-2" />
-                GitHub
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
+const socialLinks = [
+  { name: "X", icon: SiX, href: "https://x.com/raicdev" },
+  { name: "GitHub", icon: SiGithub, href: "https://github.com/raicdev" },
+  { name: "Spotify", icon: SiSpotify, href: "https://open.spotify.com/user/31xxxxxx" },
+];
 
-      {/* About My */}
-      <AboutSection />
+export default function Home() {
+  const [musicCarouselApi, setMusicCarouselApi] = useState<CarouselApi | null>(null);
+  const autoScrollPausedRef = useRef(false);
+  const autoScrollResumeTimeoutRef = useRef<number | null>(null);
+
+  const pauseAutoScroll = useCallback(() => {
+    autoScrollPausedRef.current = true;
+    if (autoScrollResumeTimeoutRef.current) {
+      window.clearTimeout(autoScrollResumeTimeoutRef.current);
+      autoScrollResumeTimeoutRef.current = null;
+    }
+  }, []);
+
+  const scheduleAutoScrollResume = useCallback(() => {
+    if (autoScrollResumeTimeoutRef.current) {
+      window.clearTimeout(autoScrollResumeTimeoutRef.current);
+    }
+    autoScrollResumeTimeoutRef.current = window.setTimeout(() => {
+      autoScrollPausedRef.current = false;
+      autoScrollResumeTimeoutRef.current = null;
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    if (!musicCarouselApi) return;
+
+    const interval = setInterval(() => {
+      if (autoScrollPausedRef.current) return;
+      if (musicCarouselApi.canScrollNext()) {
+        musicCarouselApi.scrollNext();
+      } else {
+        musicCarouselApi.scrollTo(0);
+      }
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [musicCarouselApi]);
+
+  useEffect(() => {
+    if (!musicCarouselApi) return;
+
+    musicCarouselApi.on("pointerDown", pauseAutoScroll);
+    musicCarouselApi.on("pointerUp", scheduleAutoScrollResume);
+
+    return () => {
+      musicCarouselApi.off("pointerDown", pauseAutoScroll);
+      musicCarouselApi.off("pointerUp", scheduleAutoScrollResume);
+    };
+  }, [musicCarouselApi, pauseAutoScroll, scheduleAutoScrollResume]);
+
+  useEffect(() => {
+    return () => {
+      if (autoScrollResumeTimeoutRef.current) {
+        window.clearTimeout(autoScrollResumeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div className="space-y-16">
+      {/* Hero Section */}
+      <header className="space-y-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-5xl font-bold mb-1 bg-linear-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent animate-in fade-in duration-700">
+              rai
+            </h1>
+            <p className="text-muted-foreground text-base animate-in fade-in slide-in-from-left-3 duration-700 delay-100">
+              Programmer, Full-Stack Developer
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 text-sm">
+          {socialLinks.map((link, index) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              target="_blank"
+              className="group text-muted-foreground hover:text-foreground transition-all flex items-center gap-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500"
+              style={{ animationDelay: `${200 + index * 100}ms` }}
+            >
+              <span className="group-hover:underline underline-offset-4 decoration-2 transition-all">
+                {link.name}
+              </span>
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
+            </Link>
+          ))}
+        </div>
+      </header>
 
       {/* Projects Section */}
-      <ProjectsSection />
-
-      {/* Call to Action */}
-      <CallToActionSection />
-    </>
-  );
-}
-
-function AboutSection() {
-  return (
-    <section className="w-full mb-8 space-y-4">
-      <h2 className="text-3xl font-semibold mb-8 group cursor-default relative">
-        <span className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          Who am I?
-        </span>
-      </h2>
-      <p className="text-muted-foreground text-base leading-relaxed">
-        Hi. <span className="text-foreground">I&#39;m Rai</span>, a{" "}
-        <span className="text-foreground">passionate full stack developer.</span> I living on{" "}
-        <span className="text-foreground">Japan</span>. I love{" "}
-        <span className="text-foreground">creating web applications.</span> And,{" "}
-        <span className="text-foreground">VistaUpdater</span> and{" "}
-        <span className="text-foreground">Win7Updater</span> is my notable projects.
-        <br />
-        <br />I have experience in various technologies including{" "}
-        <span className="text-foreground">Node.js</span>,{" "}
-        <span className="text-foreground">React</span>,{" "}
-        <span className="text-foreground">Next.js</span>,{" "}
-        <span className="text-foreground">TypeScript</span>, and more. I enjoy building{" "}
-        <span className="text-foreground">scalable</span> and{" "}
-        <span className="text-foreground">efficient</span> applications that solve{" "}
-        <span className="text-foreground">real-world problems</span>.
-      </p>
-    </section>
-  );
-}
-
-function ProjectsSection() {
-  return (
-    <section className="w-full mb-16">
-      <h2 className="text-3xl font-semibold mb-8 group cursor-default relative">
-        <span className="transition-opacity duration-300 text-foreground/80 group-hover:opacity-0">
-          Projects
-        </span>
-        <span className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          My brightest works
-        </span>
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {projects.map((project, index) => (
-          <div
-            className={`transition-all duration-300 ${
-              projects.length % 2 === 1 && index === projects.length - 1 ? "md:col-span-2" : ""
-            }`}
-            key={project.name}
-          >
-            <Card className="bg-muted/10 border rounded-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BotIcon className="w-5 h-5" />
-                  {project.name}
-                </CardTitle>
-                <CardDescription>{project.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="w-full flex items-center gap-2">
-                  {project.techStack.map((Icon, index) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: todo
-                    <div key={index}>
-                      <Icon />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter className="w-full flex items-center gap-2">
-                <div>
-                  <Button asChild>
-                    <Link href={project.links.website} target="_blank">
-                      <ExternalLink className="w-4 h-4" />
-                      Visit
-                    </Link>
-                  </Button>
-                </div>
-                <div>
-                  <Button variant="outline" asChild>
-                    <Link href={project.links.github} target="_blank">
-                      <Github className="w-4 h-4" />
-                      Code
-                    </Link>
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CallToActionSection() {
-  return (
-    <div className="w-full">
-      <div className="grid w-full gap-4">
-        <div className="transition-all duration-300 w-full">
-          <h2 className="text-3xl font-semibold mb-8 group cursor-default relative">
-            <span className="transition-opacity duration-300 text-foreground/80 group-hover:opacity-0">
-              Links
+      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-medium text-foreground flex items-center gap-2">
+            <span className="text-muted-foreground inline-block hover:rotate-180 transition-transform duration-500">
+              <Triangle className="w-4 h-4" />
             </span>
-            <span className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              View more
+            <span className="bg-linear-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+              Projects
             </span>
           </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="w-full bg-muted/10 border rounded-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mail className="w-5 h-5" />
-                  Contact Me
-                </CardTitle>
-                <CardDescription>
-                  Get in touch with me for collaboration or just a chat!
-                  <br />
-                  I&apos;m always open to new opportunities.
-                </CardDescription>
-              </CardHeader>
-              <CardFooter className="flex gap-4">
-                <div>
-                  <Button asChild>
-                    <Link href="/contact" target="_blank">
-                      <Mail className="w-4 h-4 mr-2" />
-                      Contact
-                    </Link>
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-
-            <div className="transition-all duration-300 w-full">
-              <Card className="w-full bg-muted/10 border rounded-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Book className="w-5 h-5" />
-                    My Blog
-                  </CardTitle>
-                  <CardDescription>
-                    Read my latest articles on web development, AI, and more. <br />I share maybe
-                    useful tips.
-                  </CardDescription>
-                </CardHeader>
-                <CardFooter className="flex gap-4">
-                  <div>
-                    <Button asChild>
-                      <Link href="/blog" target="_blank">
-                        <Book className="w-4 h-4 mr-2" />
-                        Read Blog
-                      </Link>
-                    </Button>
-                  </div>
-                </CardFooter>
-              </Card>
-            </div>
-          </div>
+          <Link
+            href="/projects"
+            className="group text-sm text-muted-foreground hover:text-foreground transition-all flex items-center gap-1"
+          >
+            <span className="group-hover:underline underline-offset-4">View All Projects</span>
+            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Link>
         </div>
 
-        <div className="transition-all duration-300 w-full overflow-hidden">
-          <Carousel
-            className="w-full shadow-sm border rounded-lg h-36"
-            plugins={[
-              Autoplay({
-                delay: 5000,
-              }),
-            ]}
-          >
-            <CarouselContent className="h-full overflow-x-visible!">
-              {musics.map((music, _index) => (
-                <CarouselItem key={music.title} className="w-full! max-w-full">
+        <ProjectsList />
+      </section>
+
+      {/* Music Section */}
+      <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
+        <h2 className="text-sm font-medium text-foreground flex items-center gap-2">
+          <SiSpotify className="w-4 h-4 animate-spotify-pulse text-[#1DB954]" />
+          <span className="bg-linear-to-r from-foreground via-[#1DB954]/60 to-foreground bg-clip-text text-transparent">
+            Favorite Music
+          </span>
+        </h2>
+
+        <Carousel
+          opts={{ align: "start", dragFree: true, containScroll: "keepSnaps" }}
+          setApi={setMusicCarouselApi}
+          className="relative -mx-4 px-4 overflow-hidden"
+          onMouseEnter={pauseAutoScroll}
+          onMouseLeave={scheduleAutoScrollResume}
+          onTouchStart={pauseAutoScroll}
+          onTouchEnd={scheduleAutoScrollResume}
+        >
+          <CarouselContent className="py-2 pr-0 ml-0">
+            {musics.map((music, index) => (
+              <CarouselItem key={music.title} className="basis-full pl-0">
+                <div
+                  className="relative w-full h-36 rounded-lg overflow-hidden select-none animate-in fade-in zoom-in-50"
+                  style={{ animationDelay: `${600 + index * 100}ms`, userSelect: "none" }}
+                >
                   <div
-                    className="relative w-full h-36 rounded-lg overflow-hidden user-select-none"
-                    style={{ userSelect: "none" }}
-                  >
-                    <div
-                      className="absolute inset-0 bg-cover bg-center filter blur-2xl scale-105"
-                      style={{ backgroundImage: `url(${music.image})` }}
-                    />
+                    className="absolute inset-0 bg-cover bg-center blur-2xl scale-105"
+                    style={{ backgroundImage: `url(${music.image})` }}
+                  />
 
-                    <div className="absolute inset-0 bg-linear-to-b from-black/10 to-black" />
+                  <div className="absolute inset-0 bg-linear-to-b from-black/10 to-black" />
 
-                    <div className="relative z-10 p-4 flex flex-col justify-between h-36">
-                      <div className="absolute top-2 right-2">
-                        <SiSpotify size={24} className="text-white/70" />
-                      </div>
-                      <div className="flex justify-between items-center gap-3 h-full">
-                        <Image
-                          src={music.image}
-                          alt={music.title}
-                          width={96}
-                          height={96}
-                          className="rounded-md min-w-16 max-w-24"
-                        />
-                        <div className="min-w-0 text-right mt-auto">
-                          <Link href={music.link} target="_blank">
-                            <div className="text-base font-semibold tracking-tight text-white truncate">
-                              {music.title}
-                            </div>
-                            <div className="text-sm font-medium text-white/70 truncate">
-                              {music.artist}
-                            </div>
-                          </Link>
-                        </div>
+                  <div className="relative z-10 p-4 flex flex-col justify-between h-36">
+                    <div className="absolute top-2 right-2">
+                      <SiSpotify size={24} className="text-white/70" />
+                    </div>
+                    <div className="flex justify-between items-center gap-3 h-full">
+                      <Image
+                        src={music.image}
+                        alt={music.title}
+                        width={96}
+                        height={96}
+                        className="rounded-md min-w-16 max-w-24"
+                      />
+                      <div className="min-w-0 text-right mt-auto">
+                        <Link href={music.link} target="_blank">
+                          <div className="text-base font-semibold tracking-tight text-white truncate">
+                            {music.title}
+                          </div>
+                          <div className="text-sm font-medium text-white/70 truncate">
+                            {music.artist}
+                          </div>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="z-10" />
-            <CarouselNext className="z-10" />
-          </Carousel>
-        </div>
-      </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden md:inline-flex" />
+          <CarouselNext className="hidden md:inline-flex" />
+        </Carousel>
+      </section>
     </div>
   );
 }
