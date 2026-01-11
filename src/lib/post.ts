@@ -14,6 +14,12 @@ type MatterResult = {
   content: string;
 };
 
+function getPostId(filePath: string): string {
+  const normalizedPath = filePath.replace(/\\/g, "/");
+  const fileName = normalizedPath.split("/").pop() ?? normalizedPath;
+  return fileName.replace(/\.mdx$/, "");
+}
+
 function normalizeLanguage(value: unknown): string | undefined {
   const normalized = (value ?? "").toString().trim().toLowerCase();
   return normalized.length > 0 ? normalized : undefined;
@@ -40,25 +46,16 @@ function buildPostData(id: string, matterResult: MatterResult): PostData {
 }
 
 const readBlogPosts = createServerOnlyFn(async (): Promise<PostData[]> => {
-  const fs = await import("node:fs");
-  const path = await import("node:path");
   const { default: matter } = await import("gray-matter");
-  const postsDirectory = path.join(process.cwd(), "content");
+  const postSources = import.meta.glob("../../content/*.mdx", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+  }) as Record<string, string>;
 
-  if (!fs.existsSync(postsDirectory)) {
-    return [];
-  }
-
-  const fileNames = fs
-    .readdirSync(postsDirectory, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".mdx"))
-    .map((entry) => entry.name);
-
-  const allPostsData = fileNames.map((fileName) => {
-    const id = fileName.replace(/\.mdx$/, "");
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, "utf8");
-    const matterResult = matter(fileContents);
+  const allPostsData = Object.entries(postSources).map(([filePath, rawContent]) => {
+    const id = getPostId(filePath);
+    const matterResult = matter(rawContent);
     return buildPostData(id, matterResult as MatterResult);
   });
 
@@ -67,23 +64,24 @@ const readBlogPosts = createServerOnlyFn(async (): Promise<PostData[]> => {
 
 const readBlogPost = createServerOnlyFn(
   async (id: string): Promise<PostData | null> => {
-    const fs = await import("node:fs");
-    const path = await import("node:path");
     const { default: matter } = await import("gray-matter");
-    const postsDirectory = path.join(process.cwd(), "content");
+    const postSources = import.meta.glob("../../content/*.mdx", {
+      query: "?raw",
+      import: "default",
+      eager: true,
+    }) as Record<string, string>;
 
-    if (!fs.existsSync(postsDirectory)) {
+    const normalizedId = id.replace(/\.mdx$/, "");
+    const matchKey = Object.keys(postSources).find(
+      (filePath) => getPostId(filePath) === normalizedId,
+    );
+
+    if (!matchKey) {
       return null;
     }
 
-    const filePath = path.join(postsDirectory, `${id}.mdx`);
-    if (!fs.existsSync(filePath)) {
-      return null;
-    }
-
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const matterResult = matter(fileContents);
-    return buildPostData(id, matterResult as MatterResult);
+    const matterResult = matter(postSources[matchKey]);
+    return buildPostData(normalizedId, matterResult as MatterResult);
   },
 );
 
