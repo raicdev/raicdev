@@ -1,9 +1,6 @@
-"use client";
-
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { SiGithub, SiSpotify, SiX } from "@icons-pack/react-simple-icons";
 import { ArrowUpRight, Triangle } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ProjectsList } from "@/components/projects-list";
 import {
@@ -78,7 +75,11 @@ const socialLinks = [
   { name: "Spotify", icon: SiSpotify, href: "https://open.spotify.com/user/31xxxxxx" },
 ];
 
-export default function Home() {
+export const Route = createFileRoute("/")({
+  component: Home,
+});
+
+function Home() {
   const [musicCarouselApi, setMusicCarouselApi] = useState<CarouselApi | null>(null);
   const autoScrollPausedRef = useRef(false);
   const autoScrollResumeTimeoutRef = useRef<number | null>(null);
@@ -138,7 +139,6 @@ export default function Home() {
 
   return (
     <div className="space-y-16">
-      {/* Hero Section */}
       <header className="space-y-4">
         <div className="flex items-start justify-between">
           <div>
@@ -153,10 +153,11 @@ export default function Home() {
 
         <div className="flex items-center gap-4 text-sm">
           {socialLinks.map((link, index) => (
-            <Link
+            <a
               key={link.name}
               href={link.href}
               target="_blank"
+              rel="noreferrer"
               className="group text-muted-foreground hover:text-foreground transition-all flex items-center gap-1.5 animate-in fade-in slide-in-from-bottom-2 duration-500"
               style={{ animationDelay: `${200 + index * 100}ms` }}
             >
@@ -164,12 +165,11 @@ export default function Home() {
                 {link.name}
               </span>
               <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-            </Link>
+            </a>
           ))}
         </div>
       </header>
 
-      {/* Projects Section */}
       <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-foreground flex items-center gap-2">
@@ -181,7 +181,7 @@ export default function Home() {
             </span>
           </h2>
           <Link
-            href="/projects"
+            to="/projects"
             className="group text-sm text-muted-foreground hover:text-foreground transition-all flex items-center gap-1"
           >
             <span className="group-hover:underline underline-offset-4">View All Projects</span>
@@ -192,7 +192,6 @@ export default function Home() {
         <ProjectsList />
       </section>
 
-      {/* Music Section */}
       <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
         <h2 className="text-sm font-medium text-foreground flex items-center gap-2">
           <SiSpotify className="w-4 h-4 animate-spotify-pulse text-[#1DB954]" />
@@ -229,22 +228,23 @@ export default function Home() {
                       <SiSpotify size={24} className="text-white/70" />
                     </div>
                     <div className="flex justify-between items-center gap-3 h-full">
-                      <Image
+                      <img
                         src={music.image}
                         alt={music.title}
                         width={96}
                         height={96}
+                        loading="lazy"
                         className="rounded-md min-w-16 max-w-24"
                       />
                       <div className="min-w-0 text-right mt-auto">
-                        <Link href={music.link} target="_blank">
+                        <a href={music.link} target="_blank" rel="noreferrer">
                           <div className="text-base font-semibold tracking-tight text-white truncate">
                             {music.title}
                           </div>
                           <div className="text-sm font-medium text-white/70 truncate">
                             {music.artist}
                           </div>
-                        </Link>
+                        </a>
                       </div>
                     </div>
                   </div>

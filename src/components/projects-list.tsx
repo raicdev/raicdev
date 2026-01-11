@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { projects, type Project } from "@/data/projects";
 
@@ -48,12 +48,25 @@ export function ProjectsList({
           );
         }
 
+        if (isExternal) {
+          return (
+            <a
+              key={project.name}
+              href={project.href}
+              target="_blank"
+              rel="noreferrer"
+              className={baseClasses}
+              style={wrapperStyle}
+            >
+              {content}
+            </a>
+          );
+        }
+
         return (
           <Link
             key={project.name}
-            href={project.href}
-            target={isExternal ? "_blank" : undefined}
-            rel={isExternal ? "noreferrer" : undefined}
+            to={project.href}
             className={baseClasses}
             style={wrapperStyle}
           >

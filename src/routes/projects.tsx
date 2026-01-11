@@ -1,11 +1,14 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight, Triangle } from "lucide-react";
-import Link from "next/link";
 import { ProjectsList } from "@/components/projects-list";
 
-export default function ProjectsPage() {
+export const Route = createFileRoute("/projects")({
+  component: ProjectsPage,
+});
+
+function ProjectsPage() {
   return (
     <div className="space-y-16">
-      {/* Header */}
       <header className="space-y-4 animate-in fade-in duration-700">
         <h1 className="text-5xl font-bold bg-linear-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
           Projects
@@ -15,12 +18,10 @@ export default function ProjectsPage() {
         </p>
       </header>
 
-      {/* Project List */}
       <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
         <ProjectsList />
       </section>
 
-      {/* More */}
       <section className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-foreground flex items-center gap-2">
@@ -31,14 +32,15 @@ export default function ProjectsPage() {
               More
             </span>
           </h2>
-          <Link
+          <a
             href="https://github.com/raicdev"
             target="_blank"
+            rel="noreferrer"
             className="group text-sm text-muted-foreground hover:text-foreground transition-all flex items-center gap-1"
           >
             <span className="group-hover:underline underline-offset-4">View on GitHub</span>
             <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </Link>
+          </a>
         </div>
         <p className="text-sm text-muted-foreground">
           Open-source prototypes, tiny experiments, and works in progress live on my GitHub.

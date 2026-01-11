@@ -1,8 +1,9 @@
-import path from "path";
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import matter from "gray-matter";
+import { createServerFn } from "@tanstack/react-start";
 
-type PostData = {
+export type PostData = {
   id: string;
   title: string;
   publishedAt: string;
@@ -11,61 +12,75 @@ type PostData = {
   language?: string;
 };
 
-// Function to get blog posts
-export function getBlogPosts(): PostData[] {
+const postsDirectory = path.join(process.cwd(), "content");
+
+function normalizeLanguage(value: unknown): string | undefined {
+  const normalized = (value ?? "").toString().trim().toLowerCase();
+  return normalized.length > 0 ? normalized : undefined;
+}
+
+function parsePostFile(filePath: string, id: string): PostData {
+  const fileContents = fs.readFileSync(filePath, "utf8");
+  const matterResult = matter(fileContents);
+
+  return {
+    id,
+    title: matterResult.data.title || "Untitled",
+    publishedAt: matterResult.data.publishedAt || new Date().toISOString(),
+    summary: matterResult.data.summary || "No summary available",
+    content: matterResult.content || "No content available",
+    language: normalizeLanguage(matterResult.data.language),
+  };
+}
+
+function readBlogPosts(): PostData[] {
+  if (!fs.existsSync(postsDirectory)) {
+    return [];
+  }
+
+  const fileNames = fs
+    .readdirSync(postsDirectory, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".mdx"))
+    .map((entry) => entry.name);
+
+  const allPostsData = fileNames.map((fileName) => {
+    const id = fileName.replace(/\.mdx$/, "");
+    const fullPath = path.join(postsDirectory, fileName);
+    return parsePostFile(fullPath, id);
+  });
+
+  return allPostsData.sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+}
+
+export const getBlogPosts = createServerFn({
+  method: "GET",
+}).handler(async () => {
   try {
-    const postsDirectory = path.join(process.cwd(), "content");
-
-    // Check if directory exists
-    if (!fs.existsSync(postsDirectory)) {
-      return [];
-    }
-
-    const fileNames = fs.readdirSync(postsDirectory);
-
-    const allPostsData = fileNames
-      .filter((fileName) => fileName.endsWith(".mdx"))
-      .map((fileName) => {
-        // Remove ".mdx" from file name to get id
-        const id = fileName.replace(/\.mdx$/, "");
-
-        // Read markdown file as string
-        const fullPath = path.join(postsDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, "utf8");
-
-        // Use gray-matter to parse the post metadata section
-        const matterResult = matter(fileContents);
-
-        // Combine the data with the id
-        return {
-          id,
-          title: matterResult.data.title || "Untitled",
-          publishedAt: matterResult.data.publishedAt || new Date().toISOString(),
-          summary: matterResult.data.summary || "No summary available",
-          content: matterResult.content || "No content available",
-          language: (matterResult.data.language || "").toString().toLowerCase() || undefined,
-        };
-      }) as PostData[];
-
-    // Sort posts by date (newest first)
-    return allPostsData.sort((a, b) => {
-      if (a.publishedAt < b.publishedAt) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
+    return readBlogPosts();
   } catch (error) {
     console.error("Error reading blog posts:", error);
     return [];
   }
-}
+});
 
-export function getBlogPost(id: string): PostData | null {
-  const posts = getBlogPosts();
-  const post = posts.find((post) => post.id === id);
-  if (!post) {
-    return null;
-  }
-  return post;
-}
+export const getBlogPost = createServerFn({
+  method: "GET",
+})
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    try {
+      if (!fs.existsSync(postsDirectory)) {
+        return null;
+      }
+
+      const filePath = path.join(postsDirectory, `${data.id}.mdx`);
+      if (!fs.existsSync(filePath)) {
+        return null;
+      }
+
+      return parsePostFile(filePath, data.id);
+    } catch (error) {
+      console.error(`Error reading blog post: ${data.id}`, error);
+      return null;
+    }
+  });

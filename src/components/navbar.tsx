@@ -1,9 +1,6 @@
-"use client";
-
 import { SiRefinedgithub, SiX } from "@icons-pack/react-simple-icons";
 import { Edit2Icon, HomeIcon, MailIcon, MoonIcon, SunIcon } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -28,12 +25,8 @@ const socialItems = [
 ];
 
 export function NavBar() {
-  const pathname = usePathname();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const { theme, setTheme } = useTheme();
-
-  if (!pathname) {
-    return null;
-  }
 
   return (
     <nav className="fixed bottom-5 left-1/2 transform -translate-x-1/2 z-50">
@@ -41,7 +34,7 @@ export function NavBar() {
         {navItems.map((item) => (
           <Link
             key={item.title}
-            href={item.href}
+            to={item.href}
             className={cn(
               "flex items-center justify-center p-2 rounded-full transition-colors",
               pathname === item.href
@@ -57,15 +50,16 @@ export function NavBar() {
         <div className="w-px h-6 bg-border mx-1" />
 
         {socialItems.map((item) => (
-          <Link
+          <a
             key={item.title}
             href={item.href}
             target="_blank"
+            rel="noreferrer"
             className="flex items-center justify-center p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent transition-colors"
             title={item.title}
           >
             {item.icon}
-          </Link>
+          </a>
         ))}
 
         <div className="w-px h-6 bg-border mx-1" />

@@ -1,6 +1,6 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { SiDiscord, SiRefinedgithub, SiX } from "@icons-pack/react-simple-icons";
 import { ArrowUpRight, Mail, Triangle } from "lucide-react";
-import Link from "next/link";
 
 const contactMethods = [
   {
@@ -30,10 +30,13 @@ const socialLinks = [
   },
 ];
 
-export default function Contact() {
+export const Route = createFileRoute("/contact")({
+  component: Contact,
+});
+
+function Contact() {
   return (
     <div className="space-y-16">
-      {/* Header */}
       <header className="space-y-4 animate-in fade-in duration-700">
         <h1 className="text-5xl font-bold bg-linear-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
           Contact
@@ -43,7 +46,6 @@ export default function Contact() {
         </p>
       </header>
 
-      {/* Contact Methods */}
       <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
         <div>
           <h2 className="text-sm font-medium text-foreground flex items-center gap-2 mb-4">
@@ -53,7 +55,7 @@ export default function Contact() {
             </span>
           </h2>
           {contactMethods.map((method, index) => (
-            <Link
+            <a
               key={method.name}
               href={method.href}
               className="group block space-y-1 p-3 -mx-3 rounded-lg hover:bg-muted/50 transition-all duration-300 border border-transparent hover:border-border hover:shadow-sm animate-in fade-in slide-in-from-left-2"
@@ -68,11 +70,10 @@ export default function Contact() {
                 </div>
                 <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
               </div>
-            </Link>
+            </a>
           ))}
         </div>
 
-        {/* Social Links */}
         <div>
           <h2 className="text-sm font-medium text-foreground flex items-center gap-2 mb-4">
             <span className="text-muted-foreground inline-block hover:rotate-180 transition-transform duration-500">
@@ -86,9 +87,10 @@ export default function Contact() {
             {socialLinks.map((link, index) => (
               <div key={link.name}>
                 {link.href ? (
-                  <Link
+                  <a
                     href={link.href}
                     target="_blank"
+                    rel="noreferrer"
                     className="group flex items-center justify-between p-3 -mx-3 rounded-lg hover:bg-muted/50 transition-all duration-300 border border-transparent hover:border-border hover:shadow-sm animate-in fade-in slide-in-from-left-2"
                     style={{ animationDelay: `${500 + index * 100}ms` }}
                   >
@@ -99,7 +101,7 @@ export default function Contact() {
                       </span>
                     </div>
                     <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </Link>
+                  </a>
                 ) : (
                   <div
                     className="flex items-center gap-3 p-3 -mx-3 rounded-lg animate-in fade-in slide-in-from-left-2"

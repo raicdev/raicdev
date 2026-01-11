@@ -1,26 +1,40 @@
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight, CalendarIcon } from "lucide-react";
-import Link from "next/link";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getBlogPosts } from "@/lib/post";
 
-type Props = {
-  searchParams?: Promise<{ lang?: string }>;
+type BlogSearch = {
+  lang?: string;
 };
 
-export default async function BlogPage({ searchParams }: Props) {
-  const posts = getBlogPosts();
+export const Route = createFileRoute("/blog/")({
+  validateSearch: (search): BlogSearch => {
+    if (!search || typeof search !== "object") {
+      return {};
+    }
+    const lang = (search as BlogSearch).lang;
+    return {
+      lang: typeof lang === "string" ? lang : undefined,
+    };
+  },
+  loader: async ({ search }) => {
+    const posts = await getBlogPosts();
+    const selectedLang = ((search?.lang || "jp") as string).toLowerCase();
+    const filteredPosts =
+      selectedLang && selectedLang !== "all"
+        ? posts.filter((post) => (post.language || "en").toLowerCase() === selectedLang)
+        : posts;
 
-  // Determine selected language from search params (server-side)
-  const selectedLang = ((await searchParams)?.lang || "jp").toLowerCase();
+    return { filteredPosts, selectedLang };
+  },
+  component: BlogPage,
+});
 
-  const filteredPosts =
-    selectedLang && selectedLang !== "all"
-      ? posts.filter((p) => (p.language || "en").toLowerCase() === selectedLang)
-      : posts;
+function BlogPage() {
+  const { filteredPosts, selectedLang } = Route.useLoaderData();
 
   return (
     <div className="space-y-16">
-      {/* Header */}
       <header className="space-y-4 animate-in fade-in duration-700">
         <h1 className="text-5xl font-bold bg-linear-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
           Blog
@@ -30,19 +44,23 @@ export default async function BlogPage({ searchParams }: Props) {
         </p>
       </header>
 
-      {/* Blog Posts Section */}
       <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-        {/* Filter controls */}
         <Tabs value={selectedLang || "jp"} className="mb-6">
           <TabsList>
             <TabsTrigger value="jp" asChild>
-              <Link href={{ pathname: "/blog", query: { lang: "jp" } }}>日本語</Link>
+              <Link to="/blog" search={{ lang: "jp" }}>
+                日本語
+              </Link>
             </TabsTrigger>
             <TabsTrigger value="en" asChild>
-              <Link href={{ pathname: "/blog", query: { lang: "en" } }}>English</Link>
+              <Link to="/blog" search={{ lang: "en" }}>
+                English
+              </Link>
             </TabsTrigger>
             <TabsTrigger value="all" asChild>
-              <Link href={{ pathname: "/blog", query: { lang: "all" } }}>すべて</Link>
+              <Link to="/blog" search={{ lang: "all" }}>
+                すべて
+              </Link>
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -50,7 +68,8 @@ export default async function BlogPage({ searchParams }: Props) {
         <div className="space-y-4">
           {filteredPosts.map((post, index) => (
             <Link
-              href={`/blog/${post.id}`}
+              to="/blog/$id"
+              params={{ id: post.id }}
               key={post.id}
               className="group block space-y-2 p-3 -mx-3 rounded-lg hover:bg-muted/50 transition-all duration-300 border border-transparent hover:border-border hover:shadow-sm animate-in fade-in slide-in-from-left-2"
               style={{ animationDelay: `${400 + index * 100}ms` }}
