@@ -3,6 +3,9 @@ import { ArrowUpRight, Triangle } from "lucide-react";
 import { ProjectsList } from "@/components/projects-list";
 
 export const Route = createFileRoute("/projects")({
+  head: () => ({
+    meta: [{ title: "Projects | rai.bio" }],
+  }),
   component: ProjectsPage,
 });
 

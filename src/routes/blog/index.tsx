@@ -8,6 +8,9 @@ type BlogSearch = {
 };
 
 export const Route = createFileRoute("/blog/")({
+  head: () => ({
+    meta: [{ title: "Blog | rai.bio" }],
+  }),
   validateSearch: (search): BlogSearch => {
     if (!search || typeof search !== "object") {
       return {};

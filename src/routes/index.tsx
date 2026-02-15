@@ -76,6 +76,9 @@ const socialLinks = [
 ];
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [{ title: "rai.bio" }],
+  }),
   component: Home,
 });
 

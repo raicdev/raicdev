@@ -31,6 +31,9 @@ const socialLinks = [
 ];
 
 export const Route = createFileRoute("/contact")({
+  head: () => ({
+    meta: [{ title: "Contact | rai.bio" }],
+  }),
   component: Contact,
 });
 
